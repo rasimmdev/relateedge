@@ -1,26 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-primary: #4F46E5;
+  --color-secondary: #7170B6;
+  --color-tertiary: #A54100;
+  --color-neutral: #64748B;
+  --font-sans: 'Inter', sans-serif;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes heroFloat1 {
+  0%, 100% { transform: translateY(0px) rotate(0.2deg); }
+  50%       { transform: translateY(-14px) rotate(-0.2deg); }
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes heroFloat2 {
+  0%, 100% { transform: translateY(0px) rotate(-0.3deg); }
+  50%       { transform: translateY(-9px) rotate(0.3deg); }
+}
+@keyframes heroFloat3 {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-7px); }
+}
+@keyframes blobPulse {
+  0%, 100% { transform: scale(1)    translate(0px, 0px);   }
+  33%       { transform: scale(1.08) translate(24px, -14px); }
+  66%       { transform: scale(0.94) translate(-16px, 20px); }
+}
+@keyframes blobPulse2 {
+  0%, 100% { transform: scale(0.94) translate(0px, 0px);    }
+  33%       { transform: scale(1.06) translate(-22px, 16px); }
+  66%       { transform: scale(1.02) translate(14px, -20px); }
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes progressBar {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+@keyframes orbitFwd {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes orbitRev {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes orbitFwdR {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes orbitCenterPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 14px rgba(79,70,229,0.09),
+      0 0 60px rgba(79,70,229,0.4),
+      0 0 120px rgba(124,58,237,0.12);
+  }
+  50% {
+    box-shadow:
+      0 0 0 20px rgba(79,70,229,0.05),
+      0 0 90px rgba(79,70,229,0.5),
+      0 0 160px rgba(124,58,237,0.18);
   }
 }
+@keyframes orbitSparkSpin {
+  from { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.1); }
+  to   { transform: rotate(360deg) scale(1); }
+}
+.stacking-card {
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+}
+.stacking-card:hover {
+  box-shadow: 0 28px 64px rgba(0,0,0,0.09) !important;
+}
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.logo-marquee {
+  animation: marqueeScroll 32s linear infinite;
+}
+.orbit-pill {
+  cursor: default;
+  transform-origin: center;
+}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html, body, p, h1, h2, h3, h4, span, div, a {
+  user-select: text ;
+  -webkit-user-select: text ;
+}
+
+.no-select, .no-select * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
