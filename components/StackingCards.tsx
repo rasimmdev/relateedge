@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { useEffect, useRef, useState, useMemo, useSyncExternalStore } from 'react'
 import {
   IcSearch, IcPen, IcChart, IcRocket, IcTarget, IcShield,
 } from './Icons'
+
 const CARDS = [
   {
     icon: <IcSearch />,
@@ -55,21 +56,41 @@ const CARDS = [
   },
 ]
 
-const STICKY_TOP = 120
+function subscribeLg(cb: () => void) {
+  const mq = window.matchMedia('(min-width: 1024px)')
+  mq.addEventListener('change', cb)
+  return () => mq.removeEventListener('change', cb)
+}
+
+function getLgSnapshot() {
+  return window.matchMedia('(min-width: 1024px)').matches
+}
+
+function useIsLg() {
+  return useSyncExternalStore(subscribeLg, getLgSnapshot, () => false)
+}
+
+const STICKY_IO_TOP_APPROX = 112
+
 function StackCard({
   card,
   index,
   total,
+  stackStep,
+  ioTopExtra,
   onIntersection,
 }: {
   card: typeof CARDS[number]
   index: number
   total: number
+  stackStep: number
+  ioTopExtra: number
   onIntersection: (index: number, isIntersecting: boolean) => void
 }) {
-  const stackOffset = index * 10
+  const stackOffset = index * stackStep
   const scale = 1 - (total - 1 - index) * 0.018
   const cardRef = useRef<HTMLDivElement>(null)
+  const ioTopShrink = STICKY_IO_TOP_APPROX + stackOffset + ioTopExtra + 50
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -77,107 +98,75 @@ function StackCard({
         onIntersection(index, entry.isIntersecting)
       },
       {
-        rootMargin: `-${STICKY_TOP + stackOffset + 50}px 0px -50% 0px`,
+        rootMargin: `-${ioTopShrink}px 0px -50% 0px`,
       }
     )
 
     if (cardRef.current) observer.observe(cardRef.current)
     return () => observer.disconnect()
-  }, [index, onIntersection, stackOffset])
+  }, [index, ioTopExtra, ioTopShrink, onIntersection])
 
   return (
-    <div ref={cardRef} style={{
-      position: 'sticky',
-      top: `${STICKY_TOP + stackOffset}px`,
-      zIndex: index + 1,
-      marginBottom: index === total - 1 ? '0px' : '80px',
-    }}>
-      <div className="stacking-card" style={{
-        background: '#fff',
-        border: '1px solid rgba(0,0,0,0.06)',
-        borderRadius: '24px',
-        padding: '40px 44px',
-        boxShadow: `0 ${16 + index * 4}px ${32 + index * 8}px rgba(0,0,0,${0.04 + index * 0.008})`,
-        transform: `scale(${scale})`,
-        transition: 'transform 0.15s ease, box-shadow 0.3s ease',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '40px',
-        overflow: 'hidden',
-        position: 'relative',
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: '-12px', left: '-24px',
-          fontSize: '140px',
-          fontWeight: 900,
-          color: card.accent,
-          opacity: 0.04,
-          lineHeight: 1,
-          letterSpacing: '-0.05em',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}>
+    <div
+      ref={cardRef}
+      className="mb-[72px] last:mb-0 lg:mb-28"
+      style={{
+        position: 'sticky',
+        top: `calc(var(--site-header-h) + 12px + ${stackOffset}px)`,
+        zIndex: index + 1,
+      }}
+    >
+      <div
+        className="stacking-card flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:gap-8 sm:p-8 lg:gap-10 lg:px-11 lg:py-10"
+        style={{
+          background: '#fff',
+          border: '1px solid rgba(0,0,0,0.06)',
+          borderRadius: '24px',
+          boxShadow: `0 ${16 + index * 4}px ${32 + index * 8}px rgba(0,0,0,${0.04 + index * 0.008})`,
+          transform: `scale(${scale})`,
+          transition: 'transform 0.15s ease, box-shadow 0.3s ease',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
+      >
+        <div
+          className="pointer-events-none absolute -left-4 -top-3 z-0 select-none text-[clamp(72px,22vw,140px)] font-black leading-none tracking-[-0.05em] opacity-[0.04] sm:-left-6 sm:text-[140px]"
+          style={{ color: card.accent }}
+        >
           {index + 1}
         </div>
-        <div style={{
-          flexShrink: 0,
-          position: 'relative', zIndex: 1,
-          width: '48px', height: '48px',
-          color: card.accent,
-          opacity: 0.7,
-        }}>
-          <div style={{ width: '48px', height: '48px' }}>
-            {card.icon}
-          </div>
+        <div
+          className="relative z-[1] h-11 w-11 shrink-0 sm:h-12 sm:w-12"
+          style={{ color: card.accent, opacity: 0.7 }}
+        >
+          {card.icon}
         </div>
-        <div style={{ flex: 1, position: 'relative', zIndex: 1, minWidth: 0 }}>
-          <h3 style={{
-            fontSize: '22px', fontWeight: 800, color: '#0f172a',
-            marginBottom: '8px', letterSpacing: '-0.025em', lineHeight: 1.2,
-          }}>
+        <div className="relative z-[1] min-w-0 flex-1">
+          <h3 className="mb-2 text-lg font-extrabold leading-tight tracking-[-0.025em] text-slate-900 sm:text-[22px]">
             {card.title}
           </h3>
-
-          <p style={{
-            fontSize: '15px', color: '#64748b', lineHeight: 1.7,
-            marginBottom: '18px', maxWidth: '460px',
-          }}>
+          <p className="mb-4 max-w-[460px] text-[15px] leading-relaxed text-slate-600">
             {card.desc}
           </p>
-
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const }}>
+          <div className="flex flex-wrap gap-1.5">
             {card.tags.map((tag) => (
-              <span key={tag} style={{
-                fontSize: '11px', fontWeight: 600, color: '#94a3b8',
-                padding: '4px 10px', borderRadius: '6px',
-                border: '1px solid rgba(0,0,0,0.06)',
-                background: 'rgba(0,0,0,0.015)',
-              }}>
+              <span
+                key={tag}
+                className="rounded-md border border-black/[0.06] bg-black/[0.015] px-2.5 py-1 text-[11px] font-semibold text-slate-400"
+              >
                 {tag}
               </span>
             ))}
           </div>
         </div>
-        <div style={{
-          position: 'relative', zIndex: 1,
-          flexShrink: 0,
-          textAlign: 'right',
-          paddingLeft: '24px',
-          borderLeft: '1px solid rgba(0,0,0,0.05)',
-          minWidth: '120px',
-        }}>
-          <div style={{
-            fontSize: '36px', fontWeight: 900, color: card.accent,
-            letterSpacing: '-0.04em', lineHeight: 1,
-            marginBottom: '4px',
-          }}>
+        <div className="relative z-[1] w-full shrink-0 border-t border-black/5 pt-4 text-left sm:w-auto sm:border-l sm:border-t-0 sm:border-black/5 sm:pl-6 sm:pt-0 sm:text-right">
+          <div
+            className="text-3xl font-black leading-none tracking-[-0.04em] sm:text-4xl"
+            style={{ color: card.accent }}
+          >
             {card.stat.value}
           </div>
-          <div style={{
-            fontSize: '11px', color: '#94a3b8', fontWeight: 500,
-            letterSpacing: '0.02em',
-          }}>
+          <div className="mt-1 text-[11px] font-medium tracking-wide text-slate-400">
             {card.stat.label}
           </div>
         </div>
@@ -185,107 +174,137 @@ function StackCard({
     </div>
   )
 }
+
+function FeaturesSteps({
+  activeStep,
+  variant,
+}: {
+  activeStep: number
+  variant: 'sidebar' | 'rail'
+}) {
+  const isRail = variant === 'rail'
+
+  return (
+    <div
+      className={
+        isRail
+          ? 'flex gap-3 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+          : 'relative'
+      }
+    >
+      {!isRail && (
+        <>
+          <div
+            className="absolute bottom-2 left-1 top-2 z-0 w-px bg-black/[0.06]"
+            aria-hidden
+          />
+          <div
+            className="absolute left-1 top-2 z-[1] w-px bg-gradient-to-b from-indigo-600 to-pink-600 transition-[bottom] duration-300 ease-out"
+            style={{
+              bottom:
+                CARDS.length > 0
+                  ? `calc(100% - ${Math.max(1, activeStep + 1) * (100 / CARDS.length)}% + 12px)`
+                  : '8px',
+            }}
+          />
+        </>
+      )}
+      {CARDS.map((card, i) => {
+        const isActive = i <= activeStep
+        return (
+          <div
+            key={card.title}
+            className={
+              isRail
+                ? 'flex shrink-0 items-center gap-2 rounded-full border border-black/5 bg-white/90 px-3 py-2 pr-4 shadow-sm'
+                : 'relative flex items-center gap-3.5 py-3'
+            }
+          >
+            <div className="relative z-[2] flex shrink-0 items-center justify-center">
+              <div
+                className="h-2 w-2 rounded-full transition-all duration-300 sm:h-[9px] sm:w-[9px]"
+                style={{
+                  background: isActive ? card.accent : '#f8fafc',
+                  border: isActive ? 'none' : '1px solid #cbd5e1',
+                  boxShadow:
+                    isActive && i === activeStep ? `0 0 0 4px ${card.accent}20` : 'none',
+                }}
+              />
+            </div>
+            <span
+              className={`max-w-[200px] truncate text-xs transition-colors duration-300 sm:max-w-none ${
+                isActive ? 'font-semibold text-slate-900' : 'font-medium text-slate-400'
+              }`}
+            >
+              {card.title}
+            </span>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 export default function StackingCards() {
+  const isLg = useIsLg()
+  const stackStep = isLg ? 10 : 8
+
   const [intersectingMap, setIntersectingMap] = useState<Record<number, boolean>>({})
   const [maxScrolled, setMaxScrolled] = useState(0)
 
-  const handleIntersection = useMemo(() => (index: number, isIntersecting: boolean) => {
-    setIntersectingMap(prev => ({ ...prev, [index]: isIntersecting }))
-    if (isIntersecting) {
-      setMaxScrolled(prev => Math.max(prev, index))
-    }
-  }, [])
+  const handleIntersection = useMemo(
+    () => (index: number, isIntersecting: boolean) => {
+      setIntersectingMap((prev) => ({ ...prev, [index]: isIntersecting }))
+      if (isIntersecting) {
+        setMaxScrolled((prev) => Math.max(prev, index))
+      }
+    },
+    []
+  )
 
-  
   const activeStep = useMemo(() => {
-    let highest = -1;
+    let highest = -1
     for (let i = 0; i < CARDS.length; i++) {
       if (intersectingMap[i]) highest = Math.max(highest, i)
     }
-    return highest === -1 ? maxScrolled : highest;
+    return highest === -1 ? maxScrolled : highest
   }, [intersectingMap, maxScrolled])
 
+  const stackGap = isLg ? 112 : 72
+  const scrollPad = (CARDS.length - 1) * stackGap
+  const ioTopExtra = isLg ? 0 : 28
+
   return (
-    <div style={{ display: 'flex', gap: '0', position: 'relative', alignItems: 'flex-start' }}>
-      <div style={{
-        position: 'sticky',
-        top: `${STICKY_TOP}px`,
-        width: '180px',
-        flexShrink: 0,
-        paddingRight: '32px',
-        paddingTop: '8px',
-      }}>
-        <div style={{
-          fontSize: '11px', fontWeight: 700, color: '#4F46E5',
-          textTransform: 'uppercase', letterSpacing: '0.1em',
-          marginBottom: '24px',
-          opacity: 0.6,
-        }}>
+    <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-0">
+      <div className="lg:hidden">
+        <div className="mb-2 text-[11px] font-bold uppercase tracking-widest text-indigo-600/80">
           Features
         </div>
-
-        <div style={{ position: 'relative' }}>
-          <div style={{
-            position: 'absolute', left: '4px', top: '8px', bottom: '8px',
-            width: '1px',
-            background: 'rgba(0,0,0,0.06)',
-            zIndex: 0,
-          }} />
-
-          <div style={{
-            position: 'absolute', left: '4px', top: '8px',
-            bottom: CARDS.length > 0 ? `calc(100% - ${Math.max(1, (activeStep + 1)) * (100 / CARDS.length)}% + 12px)` : '8px',
-            width: '1px',
-            background: 'linear-gradient(180deg, #4F46E5, #db2777)',
-            transition: 'bottom 0.4s ease',
-            zIndex: 1,
-          }} />
-
-          {CARDS.map((card, i) => {
-            const isActive = i <= activeStep;
-            
-            return (
-              <div key={card.title} style={{
-                display: 'flex', alignItems: 'center', gap: '14px',
-                padding: '12px 0',
-                position: 'relative',
-              }}>
-                <div style={{
-                  position: 'relative', zIndex: 2, 
-                  display: 'flex', alignItems: 'center', justifyContent: 'center'
-                }}>
-                  <div style={{
-                    width: '9px', height: '9px', borderRadius: '50%',
-                    background: isActive ? card.accent : '#f8fafc',
-                    border: isActive ? 'none' : '1px solid #cbd5e1',
-                    boxShadow: isActive && i === activeStep ? `0 0 0 4px ${card.accent}20` : 'none',
-                    transition: 'all 0.3s ease',
-                  }} />
-                </div>
-
-                <span style={{
-                  fontSize: '12px', fontWeight: isActive ? 600 : 500,
-                  color: isActive ? '#0f172a' : '#94a3b8',
-                  lineHeight: 1.3,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap' as const,
-                  transition: 'color 0.3s ease',
-                }}>
-                  {card.title}
-                </span>
-              </div>
-            )
-          })}
-        </div>
+        <FeaturesSteps activeStep={activeStep} variant="rail" />
       </div>
-      <div style={{ flex: 1, minWidth: 0, paddingBottom: `${(CARDS.length - 1) * 80}px` }}>
+
+      <div
+        className="hidden w-[180px] shrink-0 pr-8 pt-2 lg:block"
+        style={{
+          position: 'sticky',
+          top: 'calc(var(--site-header-h) + 12px)',
+        }}
+      >
+        <div className="mb-6 text-[11px] font-bold uppercase tracking-[0.1em] text-indigo-600 opacity-60">
+          Features
+        </div>
+        <FeaturesSteps activeStep={activeStep} variant="sidebar" />
+      </div>
+
+      <div className="min-w-0 flex-1 self-start" style={{ paddingBottom: 100 }}>
         {CARDS.map((card, i) => (
           <StackCard
             key={card.title}
             card={card}
             index={i}
             total={CARDS.length}
+            stackStep={stackStep}
+            ioTopExtra={ioTopExtra}
             onIntersection={handleIntersection}
           />
         ))}

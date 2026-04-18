@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 const PLANS = [
   {
     name: 'Free',
-    price: '$0',
-    period: 'forever',
+    price: 'Coming soon',
+    period: '',
     desc: 'Perfect for trying RelateEdge and sending your first proposals.',
     accent: '#64748b',
     iconEl: null,
@@ -29,8 +29,8 @@ const PLANS = [
   },
   {
     name: 'Pro',
-    price: '$19',
-    period: '/month',
+    price: 'Coming soon',
+    period: '',
     desc: 'For serious freelancers who want to maximize their win rate.',
     accent: '#4F46E5',
     iconEl: <IcZap />,
@@ -50,8 +50,8 @@ const PLANS = [
   },
   {
     name: 'Team',
-    price: '$49',
-    period: '/month',
+    price: 'Coming soon',
+    period: '',
     desc: 'For agencies and teams managing multiple freelancer accounts.',
     accent: '#7C3AED',
     iconEl: <IcShield />,
@@ -73,8 +73,8 @@ const PLANS = [
 
 export default function Pricing() {
   return (
-    <main style={{ position: 'relative' }}>
-      <section className="max-w-[1060px] mx-auto px-6 xl:px-0" style={{ paddingTop: '80px', paddingBottom: '64px' }}>
+    <main className="relative">
+      <section className="max-w-[1060px] mx-auto px-4 sm:px-6 xl:px-0 pt-20 pb-12 sm:pt-24 sm:pb-16">
         <div style={{ textAlign: 'center' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
@@ -105,11 +105,10 @@ export default function Pricing() {
           </p>
         </div>
       </section>
-      <section className="max-w-[1100px] mx-auto px-6 xl:px-0 pb-24">
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px',
-          alignItems: 'stretch',
-        }}>
+      <section className="max-w-[1100px] mx-auto px-4 sm:px-6 xl:px-0 pb-16 sm:pb-24">
+        <div
+          className="grid grid-cols-1 items-stretch gap-5 md:grid-cols-2 lg:grid-cols-3"
+        >
           {PLANS.map((plan) => (
             <div key={plan.name} style={{
               position: 'relative',
@@ -128,7 +127,6 @@ export default function Pricing() {
               transition: 'transform 0.2s ease, box-shadow 0.2s ease',
             }} className={plan.highlighted ? '' : 'hover:-translate-y-1 hover:shadow-lg'}>
 
-              {/* Popular badge */}
               {plan.highlighted && (
                 <div style={{
                   position: 'absolute', top: '-12px', left: '50%',
@@ -143,7 +141,6 @@ export default function Pricing() {
                 </div>
               )}
 
-              {/* Header */}
               <div style={{ marginBottom: '24px' }}>
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: '8px',
@@ -159,16 +156,23 @@ export default function Pricing() {
                   </span>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
-                  <span style={{
-                    fontSize: '48px', fontWeight: 900, color: '#0f172a',
-                    letterSpacing: '-0.04em', lineHeight: 1,
-                  }}>
+                <div style={{ marginBottom: '8px' }}>
+                  <span
+                    style={{
+                      fontSize: 'clamp(26px, 4vw, 40px)',
+                      fontWeight: 900,
+                      color: '#0f172a',
+                      letterSpacing: '-0.04em',
+                      lineHeight: 1.1,
+                    }}
+                  >
                     {plan.price}
                   </span>
-                  <span style={{ fontSize: '14px', color: '#94a3b8', fontWeight: 500 }}>
-                    {plan.period}
-                  </span>
+                  {plan.period ? (
+                    <span style={{ fontSize: '14px', color: '#94a3b8', fontWeight: 500, marginLeft: '4px' }}>
+                      {plan.period}
+                    </span>
+                  ) : null}
                 </div>
 
                 <p style={{ fontSize: '14px', color: '#64748b', lineHeight: 1.6 }}>
@@ -176,7 +180,6 @@ export default function Pricing() {
                 </p>
               </div>
 
-              {/* CTA */}
               <div style={{ marginBottom: '28px' }}>
                 {plan.ctaVariant === 'primary' ? (
                   <ButtonLink href="/signup" variant="primary">{plan.cta}</ButtonLink>
@@ -196,13 +199,11 @@ export default function Pricing() {
                 )}
               </div>
 
-              {/* Divider */}
               <div style={{
                 height: '1px', background: 'rgba(0,0,0,0.06)',
                 marginBottom: '24px',
               }} />
 
-              {/* Features */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
                 {plan.features.map((f) => (
                   <div key={f} style={{
@@ -223,7 +224,6 @@ export default function Pricing() {
           ))}
         </div>
 
-        {/* Bottom note */}
         <div style={{
           textAlign: 'center', marginTop: '40px',
           fontSize: '13px', color: '#94a3b8',
@@ -232,7 +232,7 @@ export default function Pricing() {
         </div>
       </section>
       <section style={{ background: '#f8f9ff', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-        <div className="max-w-[900px] mx-auto px-6 xl:px-0 py-24">
+        <div className="max-w-[900px] mx-auto px-4 sm:px-6 xl:px-0 py-16 sm:py-24">
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h2 style={{
               fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 800,
@@ -245,13 +245,11 @@ export default function Pricing() {
             </p>
           </div>
 
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px',
-          }}>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5">
             {[
-              { value: '68%', label: 'Average reply rate', sub: 'vs 15% industry avg' },
-              { value: '94%', label: 'Time saved per proposal', sub: '30min → 30sec' },
-              { value: '3.2×', label: 'More interviews won', sub: 'first 30 days' },
+              { value: 'Coming soon', label: 'Average reply rate', sub: 'Benchmarks after launch' },
+              { value: 'Coming soon', label: 'Time saved per proposal', sub: 'We’ll publish real numbers' },
+              { value: 'Coming soon', label: 'More interviews won', sub: 'Case studies in progress' },
             ].map((s) => (
               <div key={s.label} style={{
                 background: '#fff', border: '1px solid rgba(0,0,0,0.06)',
@@ -259,10 +257,10 @@ export default function Pricing() {
                 boxShadow: '0 4px 16px rgba(0,0,0,0.03)',
               }}>
                 <div style={{
-                  fontSize: '40px', fontWeight: 900,
+                  fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 900,
                   background: 'linear-gradient(135deg, #4F46E5, #7C3AED)',
                   WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-                  letterSpacing: '-0.03em', lineHeight: 1, marginBottom: '8px',
+                  letterSpacing: '-0.03em', lineHeight: 1.2, marginBottom: '8px',
                 }}>
                   {s.value}
                 </div>
@@ -277,10 +275,10 @@ export default function Pricing() {
           </div>
         </div>
       </section>
-      <section className="max-w-[1060px] mx-auto px-6 xl:px-0 py-24">
+      <section className="max-w-[1060px] mx-auto px-4 sm:px-6 xl:px-0 py-16 sm:py-24">
         <div style={{
           background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)',
-          borderRadius: '24px', padding: '56px 48px', textAlign: 'center',
+          borderRadius: '24px', padding: 'clamp(32px,6vw,56px) clamp(24px,5vw,48px)', textAlign: 'center',
           position: 'relative', overflow: 'hidden',
         }}>
           <div style={{

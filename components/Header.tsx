@@ -1,10 +1,14 @@
+'use client'
+
 import Link from "next/link";
 import Image from "next/image";
 import ButtonLink from "./Button";
+import { useWaitlist } from "@/components/waitlist/WaitlistContext";
 
 export default function Header() {
+  const { open } = useWaitlist()
   return (
-    <header style={{ position: 'sticky', top: 0, zIndex: 50, padding: '12px 16px 0' }}>
+    <header style={{ position: 'sticky', width: '100vw', top: 0, zIndex: 50, padding: '12px 16px 0' }}>
       <div style={{
         maxWidth: '960px',
         margin: '0 auto',
@@ -57,7 +61,9 @@ export default function Header() {
           >
             Login
           </Link>
-          <ButtonLink href="/signup" variant="primary">Get Started →</ButtonLink>
+          <ButtonLink variant="primary" onClick={open}>
+            Join to whitelist →
+          </ButtonLink>
         </div>
       </div>
     </header>

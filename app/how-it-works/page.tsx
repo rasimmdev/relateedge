@@ -102,8 +102,8 @@ const FAQS = [
 
 export default function HowItWorks() {
   return (
-    <main style={{ position: 'relative' }}>
-      <section className="max-w-[1060px] mx-auto px-6 xl:px-0" style={{ paddingTop: '80px', paddingBottom: '60px' }}>
+    <main className="relative">
+      <section className="max-w-[1060px] mx-auto px-4 sm:px-6 xl:px-0 pt-20 pb-12 sm:pt-24 sm:pb-16">
         <div style={{ textAlign: 'center' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '6px',
@@ -136,25 +136,23 @@ export default function HowItWorks() {
           <ButtonLink href="/proposal/new" variant="primary">Try it free →</ButtonLink>
         </div>
       </section>
-      <section className="max-w-[900px] mx-auto px-6 xl:px-0 py-16">
-        <div style={{ position: 'relative' }}>
+      <section className="max-w-[900px] mx-auto px-4 sm:px-6 xl:px-0 py-12 sm:py-16">
+        <div className="relative">
 
-          {/* Vertical line */}
-          <div style={{
-            position: 'absolute', left: '31px', top: '0', bottom: '0',
-            width: '2px',
-            background: 'linear-gradient(180deg, #4F46E5 0%, #7C3AED 50%, #059669 100%)',
-            opacity: 0.12,
-          }} />
+          <div
+            className="pointer-events-none absolute bottom-0 left-[31px] top-0 hidden w-0.5 md:block"
+            style={{
+              background: 'linear-gradient(180deg, #4F46E5 0%, #7C3AED 50%, #059669 100%)',
+              opacity: 0.12,
+            }}
+          />
 
           {STEPS.map((step, i) => (
-            <div key={step.n} style={{
-              display: 'flex', gap: '32px',
-              marginBottom: i < STEPS.length - 1 ? '56px' : '0',
-              position: 'relative',
-            }}>
-              {/* Step indicator */}
-              <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div
+              key={step.n}
+              className="relative mb-10 flex flex-col items-center gap-6 last:mb-0 md:mb-14 md:flex-row md:items-start md:gap-8"
+            >
+              <div className="flex shrink-0 flex-col items-center md:items-start">
                 <div style={{
                   width: '64px', height: '64px', borderRadius: '18px',
                   background: step.bg,
@@ -168,14 +166,12 @@ export default function HowItWorks() {
                 </div>
               </div>
 
-              {/* Content card */}
-              <div style={{
+              <div className="min-w-0 w-full" style={{
                 flex: 1, background: '#fff',
                 border: '1px solid rgba(0,0,0,0.06)',
                 borderRadius: '20px', padding: '28px 32px',
                 boxShadow: '0 8px 32px rgba(0,0,0,0.04)',
               }}>
-                {/* Step number */}
                 <div style={{
                   fontSize: '11px', fontWeight: 700, color: step.accent,
                   textTransform: 'uppercase', letterSpacing: '0.1em',
@@ -198,11 +194,7 @@ export default function HowItWorks() {
                   {step.desc}
                 </p>
 
-                {/* Detail bullets */}
-                <div style={{
-                  display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '8px',
-                }}>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   {step.details.map((d) => (
                     <div key={d} style={{
                       display: 'flex', alignItems: 'center', gap: '8px',
@@ -222,7 +214,7 @@ export default function HowItWorks() {
         </div>
       </section>
       <section style={{ background: '#f8f9ff', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-        <div className="max-w-[760px] mx-auto px-6 xl:px-0 py-24">
+        <div className="max-w-[760px] mx-auto px-4 sm:px-6 xl:px-0 py-16 sm:py-24">
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h2 style={{ fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>
               Frequently asked questions
@@ -247,10 +239,10 @@ export default function HowItWorks() {
           </div>
         </div>
       </section>
-      <section className="max-w-[1060px] mx-auto px-6 xl:px-0 py-24">
+      <section className="max-w-[1060px] mx-auto px-4 sm:px-6 xl:px-0 py-16 sm:py-24">
         <div style={{
           background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)',
-          borderRadius: '24px', padding: '56px 48px', textAlign: 'center',
+          borderRadius: '24px', padding: 'clamp(32px,6vw,56px) clamp(24px,5vw,48px)', textAlign: 'center',
           position: 'relative', overflow: 'hidden',
         }}>
           <div style={{
