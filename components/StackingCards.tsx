@@ -2,59 +2,10 @@
 
 import { useEffect, useRef, useState, useMemo, useSyncExternalStore } from 'react'
 import {
-  IcSearch, IcPen, IcChart, IcRocket, IcTarget, IcShield,
+  IcSearch, IcPen, IcChart, IcTarget, IcShield, IcRocket,
 } from './Icons'
+import { useLanguage } from './LanguageContext'
 
-const CARDS = [
-  {
-    icon: <IcSearch />,
-    accent: '#3b82f6',
-    title: 'Analyze any job instantly',
-    desc: 'Understand client quality, win chance, budget signals, and red flags — before you spend a second writing.',
-    tags: ['Client score', 'Win chance', 'Red flags'],
-    stat: { label: 'Avg analysis time', value: '< 3s' },
-  },
-  {
-    icon: <IcPen />,
-    accent: '#4F46E5',
-    title: 'Generate proposals that convert',
-    desc: 'AI crafts a personalized, structured proposal with a hook that speaks directly to the client\'s pain — not a template.',
-    tags: ['Hook', 'Proof', 'CTA'],
-    stat: { label: 'Avg hook score', value: '9.2' },
-  },
-  {
-    icon: <IcChart />,
-    accent: '#059669',
-    title: 'Track what wins',
-    desc: 'Log every proposal, see your reply rate, and get insights on what hooks and formats actually get responses.',
-    tags: ['Reply rate', 'A/B insights', 'History'],
-    stat: { label: 'Reply rate boost', value: '+42%' },
-  },
-  {
-    icon: <IcTarget />,
-    accent: '#d97706',
-    title: 'Score before you send',
-    desc: 'Get a real-time quality score with actionable tips to improve your proposal before hitting send.',
-    tags: ['Real-time score', 'Tips', 'Optimization'],
-    stat: { label: 'Top proposals', value: '15%' },
-  },
-  {
-    icon: <IcShield />,
-    accent: '#db2777',
-    title: 'Avoid bad clients',
-    desc: 'Red flag detection warns you about problematic jobs — unclear scope, low budgets, or clients with poor histories.',
-    tags: ['Red flags', 'Risk score', 'Trust signals'],
-    stat: { label: 'Flags detected', value: '3.2K' },
-  },
-  {
-    icon: <IcRocket />,
-    accent: '#7C3AED',
-    title: 'Win more, write less',
-    desc: 'Spend 30 seconds instead of 30 minutes. Generate, score, copy, and send — all in one flow.',
-    tags: ['Automation', 'Speed', 'Efficiency'],
-    stat: { label: 'Time saved', value: '94%' },
-  },
-]
 
 function subscribeLg(cb: () => void) {
   const mq = window.matchMedia('(min-width: 1024px)')
@@ -80,7 +31,7 @@ function StackCard({
   ioTopExtra,
   onIntersection,
 }: {
-  card: typeof CARDS[number]
+  card: any
   index: number
   total: number
   stackStep: number
@@ -149,7 +100,7 @@ function StackCard({
             {card.desc}
           </p>
           <div className="flex flex-wrap gap-1.5">
-            {card.tags.map((tag) => (
+            {card.tags.map((tag: string) => (
               <span
                 key={tag}
                 className="rounded-md border border-black/[0.06] bg-black/[0.015] px-2.5 py-1 text-[11px] font-semibold text-slate-400"
@@ -178,9 +129,11 @@ function StackCard({
 function FeaturesSteps({
   activeStep,
   variant,
+  cards,
 }: {
   activeStep: number
   variant: 'sidebar' | 'rail'
+  cards: any[]
 }) {
   const isRail = variant === 'rail'
 
@@ -202,14 +155,14 @@ function FeaturesSteps({
             className="absolute left-1 top-2 z-[1] w-px bg-gradient-to-b from-indigo-600 to-pink-600 transition-[bottom] duration-300 ease-out"
             style={{
               bottom:
-                CARDS.length > 0
-                  ? `calc(100% - ${Math.max(1, activeStep + 1) * (100 / CARDS.length)}% + 12px)`
+                cards.length > 0
+                  ? `calc(100% - ${Math.max(1, activeStep + 1) * (100 / cards.length)}% + 12px)`
                   : '8px',
             }}
           />
         </>
       )}
-      {CARDS.map((card, i) => {
+      {cards.map((card, i) => {
         const isActive = i <= activeStep
         return (
           <div
@@ -246,6 +199,59 @@ function FeaturesSteps({
 }
 
 export default function StackingCards() {
+  const { t } = useLanguage()
+
+  const CARDS = useMemo(() => [
+    {
+      icon: <IcSearch />,
+      accent: '#3b82f6',
+      title: t('cards.card1.title'),
+      desc: t('cards.card1.desc'),
+      tags: [t('cards.card1.tag1'), t('cards.card1.tag2'), t('cards.card1.tag3')],
+      stat: { label: t('cards.card1.statLabel'), value: '< 3s' },
+    },
+    {
+      icon: <IcPen />,
+      accent: '#4F46E5',
+      title: t('cards.card2.title'),
+      desc: t('cards.card2.desc'),
+      tags: [t('cards.card2.tag1'), t('cards.card2.tag2'), t('cards.card2.tag3')],
+      stat: { label: t('cards.card2.statLabel'), value: '9.2' },
+    },
+    {
+      icon: <IcChart />,
+      accent: '#059669',
+      title: t('cards.card3.title'),
+      desc: t('cards.card3.desc'),
+      tags: [t('cards.card3.tag1'), t('cards.card3.tag2'), t('cards.card3.tag3')],
+      stat: { label: t('cards.card3.statLabel'), value: '+42%' },
+    },
+    {
+      icon: <IcTarget />,
+      accent: '#d97706',
+      title: t('cards.card4.title'),
+      desc: t('cards.card4.desc'),
+      tags: [t('cards.card4.tag1'), t('cards.card4.tag2'), t('cards.card4.tag3')],
+      stat: { label: t('cards.card4.statLabel'), value: '15%' },
+    },
+    {
+      icon: <IcShield />,
+      accent: '#db2777',
+      title: t('cards.card5.title'),
+      desc: t('cards.card5.desc'),
+      tags: [t('cards.card5.tag1'), t('cards.card5.tag2'), t('cards.card5.tag3')],
+      stat: { label: t('cards.card5.statLabel'), value: '3.2K' },
+    },
+    {
+      icon: <IcRocket />,
+      accent: '#7C3AED',
+      title: t('cards.card6.title'),
+      desc: t('cards.card6.desc'),
+      tags: [t('cards.card6.tag1'), t('cards.card6.tag2'), t('cards.card6.tag3')],
+      stat: { label: t('cards.card6.statLabel'), value: '94%' },
+    },
+  ], [t])
+
   const isLg = useIsLg()
   const stackStep = isLg ? 10 : 8
 
@@ -268,7 +274,7 @@ export default function StackingCards() {
       if (intersectingMap[i]) highest = Math.max(highest, i)
     }
     return highest === -1 ? maxScrolled : highest
-  }, [intersectingMap, maxScrolled])
+  }, [intersectingMap, maxScrolled, CARDS.length])
 
   const stackGap = isLg ? 112 : 72
   const scrollPad = (CARDS.length - 1) * stackGap
@@ -278,9 +284,9 @@ export default function StackingCards() {
     <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-0">
       <div className="lg:hidden">
         <div className="mb-2 text-[11px] font-bold uppercase tracking-widest text-indigo-600/80">
-          Features
+          {t('features.badge')}
         </div>
-        <FeaturesSteps activeStep={activeStep} variant="rail" />
+        <FeaturesSteps activeStep={activeStep} variant="rail" cards={CARDS} />
       </div>
 
       <div
@@ -291,9 +297,9 @@ export default function StackingCards() {
         }}
       >
         <div className="mb-6 text-[11px] font-bold uppercase tracking-[0.1em] text-indigo-600 opacity-60">
-          Features
+          {t('features.badge')}
         </div>
-        <FeaturesSteps activeStep={activeStep} variant="sidebar" />
+        <FeaturesSteps activeStep={activeStep} variant="sidebar" cards={CARDS} />
       </div>
 
       <div className="min-w-0 flex-1 self-start" style={{ paddingBottom: 100 }}>

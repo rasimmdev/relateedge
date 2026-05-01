@@ -182,9 +182,9 @@ export default function Pricing() {
 
               <div style={{ marginBottom: '28px' }}>
                 {plan.ctaVariant === 'primary' ? (
-                  <ButtonLink href="/signup" variant="primary">{plan.cta}</ButtonLink>
+                  <ButtonLink href="/register" variant="primary">{plan.cta}</ButtonLink>
                 ) : (
-                  <Link href={plan.name === 'Team' ? '/contact' : '/signup'} style={{
+                  <Link href={plan.name === 'Team' ? '/contact' : '/register'} style={{
                     display: 'inline-flex', alignItems: 'center',
                     fontSize: '14px', fontWeight: 600,
                     color: plan.accent,

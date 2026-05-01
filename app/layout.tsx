@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { WaitlistProvider } from "@/components/waitlist/WaitlistContext";
+import { LanguageProvider } from "@/components/LanguageContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -62,15 +60,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} font-sans w-screen overflow-x-hidden`}>
-      <body className="relative min-h-screen bg-[#fafbff] text-slate-900">
+    <html lang="en" className={`${inter.variable} font-sans w-screen overflow-x-hidden`} style={{ position: 'relative' }}>
+      <body className="relative min-h-screen bg-[#fafbff] text-slate-900" style={{ position: 'relative' }}>
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[900px] -z-10 bg-grid" />
 
-        <WaitlistProvider>
-          <Header />
+        <LanguageProvider>
           {children}
-          <Footer />
-        </WaitlistProvider>
+        </LanguageProvider>
 
       </body>
     </html>

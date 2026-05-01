@@ -1,7 +1,11 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { useLanguage } from './LanguageContext'
 
 export default function Footer() {
+  const { t } = useLanguage()
   return (
     <footer className="border-t border-black/[0.06] pt-20 pb-10 bg-white">
       <div className="max-w-[1200px] mx-auto px-6 xl:px-0">
@@ -75,7 +79,7 @@ export default function Footer() {
 
         <div className="flex justify-between items-center pt-8 border-t border-black/[0.06] flex-wrap gap-4">
           <div className="text-[13px] text-slate-400">
-            © {new Date().getFullYear()} RELATEEDGE AI. PRECISION ENGINEERING.
+            © {new Date().getFullYear()} RELATEEDGE AI. {t('footer.rights')}
           </div>
           <div className="flex gap-5">
             <a href="#" className="text-slate-400 hover:text-indigo-600 transition-colors" aria-label="Twitter">

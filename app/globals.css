@@ -119,16 +119,33 @@ html, body, p, h1, h2, h3, h4, span, div, a {
   -webkit-mask-image: radial-gradient(ellipse 100% 60% at 50% 0%, black 30%, transparent 100%);
 }
 
-.reveal {
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+[data-reveal] {
+  animation: revealUp 0.7s ease both;
+}
+
+[data-reveal].reveal-pending {
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(32px);
   transition: opacity 0.7s ease, transform 0.7s ease;
+  animation: none;
   will-change: opacity, transform;
 }
 
-[data-reveal].is-visible > .reveal {
+[data-reveal].is-visible {
   opacity: 1;
   transform: translateY(0);
+  animation: none;
 }
 
 .blob {

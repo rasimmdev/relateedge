@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useState, useRef } from 'react'
+import { useLayoutEffect, useState, useRef } from 'react'
 import type { CSSProperties } from 'react'
 import {
   IcChart, IcTarget, IcZap, IcStar, IcMessageSquare,
@@ -189,14 +189,8 @@ function iconWrap(s: number, dim = 16) {
 }
 
 export default function HeroOrbit() {
-  const [visible, setVisible] = useState(false)
   const [s, setS] = useState(1)
   const wrapperRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 250)
-    return () => clearTimeout(t)
-  }, [])
 
   useLayoutEffect(() => {
     const el = wrapperRef.current
@@ -239,8 +233,7 @@ export default function HeroOrbit() {
         style={{
           width: size,
           height: size,
-          opacity: visible ? 1 : 0,
-          transition: 'opacity 1s ease',
+          animation: 'fadeInUp 1s ease both',
         }}
       >
         <div
